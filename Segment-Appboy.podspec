@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'tvOS' do |tv|
     tv.platform = :tvos, '11.0'
-    tv.dependency 'Appboy-tvOS-SDK', '~>4.3.0'
+    tv.dependency 'Appboy-tvOS-SDK', '~>4.4.0'
     tv.source_files = 'Pod/Classes/**/*'
   end
 
