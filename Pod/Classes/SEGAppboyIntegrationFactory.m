@@ -35,7 +35,9 @@
 }
 
 - (id<SEGIntegration>)createWithSettings:(NSDictionary *)settings forAnalytics:(SEGAnalytics *)analytics {
-  return [[SEGAppboyIntegration alloc] initWithSettings:settings appboyOptions:self.appboyOptions];
+    SEGAppboyIntegration *integration = [[SEGAppboyIntegration alloc] initWithSettings:settings appboyOptions:self.appboyOptions];
+    integration.shouldIdentify = self.shouldIdentify;
+    return integration;
 }
 
 - (NSString *)key {

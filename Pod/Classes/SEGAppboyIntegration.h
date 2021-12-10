@@ -11,6 +11,8 @@
 
 @property(nonatomic, strong, nullable) NSDictionary *settings;
 
+@property(nonatomic) BOOL shouldIdentify;
+
 - (nullable id)initWithSettings:(nonnull NSDictionary *)settings;
 - (nullable id)initWithSettings:(nonnull NSDictionary *)settings appboyOptions:(nullable NSDictionary *)appboyOptions;
 
