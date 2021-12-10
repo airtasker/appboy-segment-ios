@@ -46,6 +46,7 @@
 - (id)initWithSettings:(NSDictionary *)settings appboyOptions:(NSDictionary *)appboyOptions
 {
   if (self = [super init]) {
+    self.shouldIdentify = YES;
     self.settings = settings;
     id appboyAPIKey = self.settings[@"apiKey"];
     if (![appboyAPIKey isKindOfClass:[NSString class]] || [appboyAPIKey length] == 0) {
@@ -98,6 +99,9 @@
     dispatch_async(dispatch_get_main_queue(), ^{
       [self identify:payload];
     });
+    return;
+  }
+  if (!self.shouldIdentify) {
     return;
   }
   // Ensure that the userID is set and valid (i.e. a non-empty string).

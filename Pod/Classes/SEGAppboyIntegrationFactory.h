@@ -14,6 +14,8 @@
 // are documented in Appboy.h
 @property NSDictionary *appboyOptions;
 
+@property(nonatomic) BOOL shouldIdentify;
+
 + (instancetype)instance;
 
 - (void)saveLaunchOptions:(NSDictionary *)launchOptions;
