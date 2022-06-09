@@ -202,60 +202,21 @@
 
 - (void)track:(SEGTrackPayload *)payload
 {
-  if ([payload.event isEqualToString:@"Install Attributed"]) {
-    if ([payload.properties[@"campaign"] isKindOfClass:[NSDictionary class]]) {
-      NSDictionary *attributionDataDictionary = (NSDictionary *)payload.properties[@"campaign"];
-      ABKAttributionData *attributionData = [[ABKAttributionData alloc]
-                                             initWithNetwork:attributionDataDictionary[@"source"]
-                                                    campaign:attributionDataDictionary[@"name"]
-                                                     adGroup:attributionDataDictionary[@"ad_group"]
-                                                    creative:attributionDataDictionary[@"ad_creative"]];
-      [[Appboy sharedInstance].user setAttributionData:attributionData];
-      return;
-    }
-  }
-  
-  NSDecimalNumber *revenue = [SEGAppboyIntegration extractRevenue:payload.properties withKey:@"revenue"];
-  if (revenue || [payload.event isEqualToString:@"Order Completed"]
-              || [payload.event isEqualToString:@"Completed Order"]) {
-    NSString *currency = @"USD";  // Make USD as the default currency.
-    if ([payload.properties[@"currency"] isKindOfClass:[NSString class]] &&
-        [(NSString *)payload.properties[@"currency"] length] == 3) {  // Currency should be an ISO 4217 currency code.
-      currency = payload.properties[@"currency"];
+    if ([payload.event isEqualToString:@"Install Attributed"]) {
+        if ([payload.properties[@"campaign"] isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *attributionDataDictionary = (NSDictionary *)payload.properties[@"campaign"];
+            ABKAttributionData *attributionData = [[ABKAttributionData alloc]
+                                                   initWithNetwork:attributionDataDictionary[@"source"]
+                                                   campaign:attributionDataDictionary[@"name"]
+                                                   adGroup:attributionDataDictionary[@"ad_group"]
+                                                   creative:attributionDataDictionary[@"ad_creative"]];
+            [[Appboy sharedInstance].user setAttributionData:attributionData];
+            return;
+        }
     }
     
-    if (payload.properties != nil) {
-      NSMutableDictionary *appboyProperties = [NSMutableDictionary dictionaryWithDictionary:payload.properties];
-      appboyProperties[@"currency"] = nil;
-      appboyProperties[@"revenue"] = nil;
-      
-      if (appboyProperties[@"products"]) {
-        NSArray *products = [appboyProperties[@"products"] copy];
-        appboyProperties[@"products"] = nil;
-
-        for (NSDictionary *product in products) {
-          NSMutableDictionary *productDictionary = [product mutableCopy];
-          NSString *productId = productDictionary[@"productId"];
-          NSDecimalNumber *productRevenue = [SEGAppboyIntegration extractRevenue:productDictionary withKey:@"price"];
-          NSUInteger productQuantity = [productDictionary[@"quantity"] unsignedIntegerValue];
-          productDictionary[@"productId"] = nil;
-          productDictionary[@"price"] = nil;
-          productDictionary[@"quantity"] = nil;
-          NSMutableDictionary *productProperties = [appboyProperties mutableCopy];
-          [productProperties addEntriesFromDictionary:productDictionary];
-          [[Appboy sharedInstance] logPurchase:productId inCurrency:currency atPrice:productRevenue withQuantity:productQuantity andProperties:productProperties];
-        }
-      } else {
-        [[Appboy sharedInstance] logPurchase:payload.event inCurrency:currency atPrice:revenue withQuantity:1 andProperties:appboyProperties];
-      }
-    } else {
-      [[Appboy sharedInstance] logPurchase:payload.event inCurrency:currency atPrice:revenue withQuantity:1];
-    }
-    SEGLog(@"[[Appboy sharedInstance] logPurchase: inCurrency: atPrice: withQuantity:]");
-  } else {
     [[Appboy sharedInstance] logCustomEvent:payload.event withProperties:payload.properties];
     SEGLog(@"[[Appboy sharedInstance] logCustomEvent: withProperties:]");
-  }
 }
 
 + (NSDecimalNumber *)extractRevenue:(NSDictionary *)dictionary withKey:(NSString *)revenueKey
