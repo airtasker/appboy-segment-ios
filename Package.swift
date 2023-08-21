@@ -13,14 +13,14 @@ let package = Package(
   ],
   dependencies: [
     .package(name: "Segment", url: "https://github.com/segmentio/analytics-ios.git", from: "4.1.1"),
-    .package(name: "Appboy_iOS_SDK", url: "https://github.com/braze-inc/braze-ios-sdk.git", from: "4.5.1"),
+    .package(url: "https://github.com/airtasker/braze-ios-sdk", .branchItem("NT-fix-package.swift"))
   ],
   targets: [
     .target(
       name: "AppboySegment",
       dependencies: [
           .product(name: "Segment", package: "Segment"),
-          .product(name: "AppboyUI", package: "Appboy_iOS_SDK"),
+          .product(name: "AppboyUI", package: "braze-ios-sdk"),
       ],
       publicHeadersPath: ".",
       cSettings: [
@@ -31,7 +31,7 @@ let package = Package(
       name: "AppboySegmentCore",
       dependencies: [
           .product(name: "Segment", package: "Segment"),
-          .product(name: "AppboyKit", package: "Appboy_iOS_SDK"),
+          .product(name: "AppboyKit", package: "braze-ios-sdk"),
       ],
       publicHeadersPath: ".",
       cSettings: [
